@@ -1,5 +1,5 @@
 #!/bin/sh
-ln -sf ~/dotfile/.zshrc ~/.zshrc
-ln -sf ~/dotfile/.zprofile ~/.zprofile
-ln -sf ~/dotfile/.vimrc ~/.vimrc
+ln -sf ~/dotfiles/.zshrc ~/.zshrc
+ln -sf ~/dotfiles/.zprofile ~/.zprofile
+ln -sf ~/dotfiles/.vimrc ~/.vimrc
 
