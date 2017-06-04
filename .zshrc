@@ -1,4 +1,3 @@
-# 環境変数
 export LANG=ja_JP.UTF-8
 
 # zplug
@@ -31,7 +30,7 @@ PROMPT="%B%F{red}%n@%m%f:%F{blue}%~%f%b
 PROMPT2="> "
 
 # export LS_COLORS
-eval $(dircolors ~/.dircolors)
+eval "$(dircolors ~/.dircolors)"
 
 setopt correct                      # もしかして機能、コマンドのスペルミスを指摘
 setopt numeric_glob_sort            # 辞書順ではなく数字順に並べる
@@ -112,7 +111,7 @@ alias pandoc="pandoc -s"
 alias open="xdg-open"
 alias -s {png,jpg,bmp,PNG,JPG,BMP}="open"
 
-# ファイル解凍コマンド
+# unarコマンドの代わり
 function extract() {
   case $1 in
     *.tar) tar xvf $1;;
