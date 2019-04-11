@@ -1,153 +1,234 @@
 export LANG=ja_JP.UTF-8
 
-# zplug
-# https://github.com/zplug/zplug/blob/master/doc/guide/ja/README.md
-source ~/.zplug/init.zsh
+# set $LS_COLORS
+eval "$(dircolors $HOME/.dircolors)"
 
-zplug "zsh-users/zsh-history-substring-search"
-zplug "zsh-users/zsh-syntax-highlighting", defer:2
-zplug "zsh-users/zsh-completions"
-zplug "zsh-users/zsh-history-substring-search"
-zplug "plugins/git", from:oh-my-zsh
-zplug "plugins/heroku", from:oh-my-zsh
-zplug "mollifier/cd-gitroot"
-zplug "soimort/translate-shell"
+# ################################################################################
+#            _             _
+#  _____ __ | |_   _  __ _(_)_ __
+# |_  / '_ \| | | | |/ _` | | '_ \
+#  / /| |_) | | |_| | (_| | | | | |
+# /___| .__/|_|\__,_|\__, |_|_| |_|
+#     |_|            |___/
+#
+# https://github.com/zdharma/zplugin
 
-# 未インストール項目をインストールする
-if ! zplug check --verbose; then
-  printf "Install? [y/N]: "
-  if read -q; then
-    echo; zplug install
-  fi
+if [ -z "$ZPLG_HOME" ]; then
+    ZPLG_HOME="$HOME/.zplugin"
 fi
 
-# コマンドをリンクして、PATH に追加し、プラグインを読み込む
-zplug load --verbose
+if [ ! -d "$ZPLG_HOME" ]; then
+  echo ">>> Downloading zplugin to $ZPLG_HOME"
+  git clone --depth 1 https://github.com/zdharma/zplugin.git "$ZPLG_HOME"
+  echo ">>> Done"
+fi
 
-# PROMPT
+source "$ZPLG_HOME/zplugin.zsh"
+autoload -Uz _zplugin
+(( ${+_comps} )) && _comps[zplugin]=_zplugin
+
+zplugin light zsh-users/zsh-autosuggestions
+zplugin light zsh-users/zsh-completions
+zplugin light soimort/translate-shell
+
+zplugin snippet OMZ::plugins/git/git.plugin.zsh
+
+zplugin ice wait"0" atinit"zpcompinit" lucid
+zplugin light zdharma/fast-syntax-highlighting
+
+################################################################################
+#          _                   _   _
+#  _______| |__     ___  _ __ | |_(_) ___  _ __  ___
+# |_  / __| '_ \   / _ \| '_ \| __| |/ _ \| '_ \/ __|
+#  / /\__ \ | | | | (_) | |_) | |_| | (_) | | | \__ \
+# /___|___/_| |_|  \___/| .__/ \__|_|\___/|_| |_|___/
+#                       |_|
+
+# フォーマットの記法
+# %F{color}..%f : 色
+# %B..%b        : 太字
+# %U..%u        : 下線
+# %d            : 説明
+
+# 補完機能を有効にする
+# autoload -Uz compinit && compinit
+
+# プロンプトの表示形式
 PROMPT="%B%F{red}%n@%m%f:%F{blue}%~%f%b
 %# "
+# 2行目以降
 PROMPT2="> "
 
-# export LS_COLORS
-eval "$(dircolors ~/.dircolors)"
+# 単語の一部と見なす文字 (デフォルトの"$WORDCHARS"から'/'を削除)
+WORDCHARS="*?_-.[]~=&;!#$%^(){}<>"
 
-setopt correct                      # もしかして機能、コマンドのスペルミスを指摘
-setopt numeric_glob_sort            # 辞書順ではなく数字順に並べる
-setopt no_beep                      # ビープ音を鳴らさない
-setopt prompt_subst                 # PROMPT変数内で変数参照する
-# setopt interactive_comments       # コマンドラインで # 以降をコメントと見なす
+# Changing Directories
+setopt AUTO_CD                 # ディレクトリ名だけでcdコマンドを実行する
+setopt AUTO_PUSHD              # cd -[TAB] で以前移動したディレクトリの候補を表示する
+setopt PUSHD_IGNORE_DUPS       # AUTO_PUSHD で重複したディレクトリを記録しない
+setopt CHASE_LINKS             # ディレクトリを変更したとき、シンボリックリンクを実体パスに変換する
 
-# 補完
-autoload -Uz compinit; compinit     # 補完機能を有効
-setopt complete_in_word             # カーソル位置で補完する
-setopt always_last_prompt           # 補完のときプロンプトの位置を変えない
-setopt auto_cd                      # ディレクトリ名の入力だけで移動できる
-setopt auto_pushd                   # cd -[TAB] で以前移動したディレクトリの候補を提示する
-setopt pushd_ignore_dups            # auto_pushdのディレクトリスタックで重複は記録しない
-setopt auto_list                    # 補完候補を一覧で表示する
-setopt list_packed                  # 補完候補を詰めて表示する
-setopt list_types                   # 補完候補でファイルの種類を表示する
-setopt auto_menu                    # 補完キー（Tab, Ctrl+I) 連打で補完候補を順に表示する
-bindkey "^[[Z" reverse-menu-complete # Shift-Tabで補完候補を逆順する("\e[Z"でも動作する)
-setopt magic_equal_subst            # --prefix=以降でもパス名を補完する
+# Input/Output
+setopt CORRECT                 # コマンドのスペルミスを指摘し修正するか尋ねる
 
-setopt brace_ccl                    # {a-c} を a b c に展開する
-# setopt extended_glob              # 拡張glob # ~ ^ の3文字を正規表現として扱う
-setopt noautoremoveslash            # パスの最後に付くスラッシュを自動的に削除しない
-setopt chase_links                  # シンボリックリンクは実体のパスに変換する
+# Expansion and Globbing
+setopt BRACE_CCL               # ブレース展開機能
+setopt NUMERIC_GLOB_SORT       # ファイル名を辞書順ではなく数字順にソート
+setopt MAGIC_EQUAL_SUBST       # 引数の'='以降でも補完する
 
-# sudoの後ろでも補完できるようにする
-zstyle ":completion:*:sudo:*" command-path /usr/local/sbin /usr/local/bin /usr/sbin /usr/bin /sbin /bin
-# 大文字・小文字を区別しないで補完するが、大文字を入力した場合は区別する
-zstyle ":completion:*" matcher-list "m:{a-z}={A-Z}"
-## 補完侯補をメニューから選択する
-## select=2: 補完候補を一覧から選択する
-## ただし、補完候補が2つ以上なければすぐに補完する
-zstyle ":completion:*:default" menu select=2
-zstyle ":completion:*:*:kill:*:processes" list-colors "=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01"
-zstyle ":completion:*:*:*:*:processes" command "ps -u `whoami` -o pid,user,comm -w -w"
-## 補完関数の表示を強化
-zstyle ":completion:*" verbose yes
-# zstyle ":completion:*" completer _expand _complete _match _prefix _approximate _list _history
-zstyle ":completion:*:messages" format "%F{YELLOW}%d"
-zstyle ":completion:*:warnings" format "%F{RED}No matches for:""%F{YELLOW} %d"
-zstyle ":completion:*:descriptions" format "%F{YELLOW}completing %B%d%b"
-zstyle ":completion:*:options" description "yes"
-zstyle ":completion:*:descriptions" format "%F{yellow}Completing %B%d%b%f"
-# manの補完をセクション番号別に表示させる
-zstyle ":completion:*:manuals" separate-sections true
-# セパレータを指定する
-zstyle ":completion:*" list-separator "-->"
-# zshの補完にもlsコマンドと同じ色を設定
-zstyle ":completion:*" list-colors ${(s.:.)LS_COLORS}
+# Prompting
+setopt PROMPT_SUBST            # プロンプトでパラメータ展開、コマンド置換、算術展開をする
+setopt TRANSIENT_RPROMPT       # コマンド実行後に右プロンプトを削除する
 
-# 履歴
-HISTFILE=~/.zsh_history     # ヒストリーファイルの場所
-HISTSIZE=100000             # メモリ上に保存される件数
-SAVEHIST=1000000            # ファイルに保存される件数
-setopt share_history        # 履歴を複数端末間で共有
-setopt append_history       # 複数のzshを同時に使う時などhistoryファイルに上書きせず追加
-setopt hist_reduce_blanks   # 余分な空白を削除
-setopt hist_ignore_dups     # 直前と重複するコマンドを記録しない
-setopt hist_no_store        # historyコマンドは記録しない
+# Completion
+setopt ALWAYS_LAST_PROMPT      # 補完候補を表示した後でもプロンプトの位置を変えない
+setopt AUTO_LIST               # 補完候補のリストを表示する
+setopt AUTO_MENU               # TAB連打で候補を選択する
+setopt AUTO_PARAM_SLASH        # 補完したディレクトリの末尾にスラッシュを追加する
+setopt COMPLETE_IN_WORD        # カーソル位置で補完する
+setopt LIST_PACKED             # 補完候補を詰めて表示する
+setopt LIST_TYPES              # 補完候補でファイルの種類を表示する
 
-# alias
-alias ls="ls -F --color=auto"
-alias ll="ls -lh"
-alias la="ls -a"
-alias lla="ls -alh"
-alias grep="grep --color=auto"
-alias -g L="| $PAGER"
-alias -g G="| grep"
-alias -g V="| vim -R -"
-alias diff="diff -u"
-alias gdiff="git diff --no-index --color-words"
-alias cdu="cd-gitroot"
-alias aptup="sudo apt-get update"
-alias aptug="sudo apt-get upgrade"
-alias apti="sudo apt-get install"
-alias pandoc="pandoc -s"
-alias open="xdg-open"
-alias -s {png,jpg,bmp,PNG,JPG,BMP}="open"
+zstyle ':completion:*' verbose true
+zstyle ':completion:*' use-cache true
+zstyle ':completion:*' menu select=2
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' list-dirs-first true
+zstyle ':completion:*' list-separator '-->'
 
-# unarコマンドの代わり
+# 補完候補
+# zstyle ':completion:*' completer _expand _complete _match _prefix _approximate _list _history
+zstyle ':completion:*' completer _complete
+
+# マッチするものがなければ、大文字小文字を無視して再マッチング
+zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
+
+# 補完候補リストのグループ化とそのグループの説明を表示する
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:matches' group true
+zstyle ':completion:*:options' description true
+zstyle ':completion:*:options' auto-description '%d'
+zstyle ':completion:*'              format '%F{yellow}-- %d --%f'
+zstyle ':completion:*:corrections'  format '%F{green}-- %d (errors: %e) --%f'
+zstyle ':completion:*:descriptions' format '%F{yellow}-- %d --%f'
+zstyle ':completion:*:messages'     format '%F{purple} -- %d --%f'
+zstyle ':completion:*:warnings'     format '%F{red}-- no matches found --%f'
+zstyle ':completion:*:default' list-prompt '%S%M matches%s'
+
+# sudoコマンドの後で補完するためのパス
+zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin /usr/sbin /usr/bin /sbin /bin
+
+# History
+HISTFILE=~/.zsh_history         # 履歴ファイルの保存先
+HISTSIZE=100000                 # メモリに保存される履歴の件数
+SAVEHIST=100000                 # 履歴ファイルに保存される履歴の件数
+setopt APPEND_HISTORY           # ヒストリーファイルを上書きせず追加する
+setopt HIST_FIND_NO_DUPS        # 履歴エントリ検索中一度見つけたコマンドを表示しない
+setopt HIST_IGNORE_ALL_DUPS     # 重複するコマンドの記録時に古い方を削除する
+setopt HIST_IGNORE_DUPS         # 直前と重複するコマンドを記録しない
+setopt HIST_NO_FUNCTIONS        # 関数定義を記録しない
+setopt HIST_NO_STORE            # history (fc -l) コマンドは記録しない
+setopt HIST_REDUCE_BLANKS       # 余分な空白を削除
+unsetopt EXTENDED_HISTORY         # タイムスタンプ機能 ': <開始時間>:<経過秒数>;<コマンド>' の形式で記録される
+# 以下3つの設定は排他的に機能する
+setopt INC_APPEND_HISTORY       # シェルの終了を待たず, コマンド実行時に記録する
+unsetopt INC_APPEND_HISTORY_TIME  # シェルの終了を待たず, コマンド終了時に EXTENDED_HISTORY 形式で記録する
+unsetopt SHARE_HISTORY            # 履歴を複数端末間で共有, EXTENDED_HISTORY 形式で記録する
+
+# キーバインドの設定
+bindkey '^;5D'    backward-word             # 単語区切りで後方移動
+bindkey '^;5C'    forward-word              # 単語区切りで前方移動
+bindkey '^[[Z'    reverse-menu-complete     # Shift+Tabで補完候補を逆順する
+
+# カーソル位置までの入力から履歴を検索し、カーソル位置を行末に移動する
+autoload -Uz history-search-end
+zle -N history-beginning-search-backward-end history-search-end
+zle -N history-beginning-search-forward-end history-search-end
+bindkey '^p' history-beginning-search-backward-end
+bindkey '^n' history-beginning-search-forward-end
+
+################################################################################
+#        _ _
+#   __ _| (_) __ _ ___
+#  / _` | | |/ _` / __|
+# | (_| | | | (_| \__ \
+#  \__,_|_|_|\__,_|___/
+
+alias diff='diff -u'
+alias gdiff='git diff --color-words'
+alias grep='grep --color=auto'
+
+# apt
+alias aptac='sudo apt autoclean'
+alias aptarm='sudo apt autoremove'
+alias apti='sudo apt install'
+alias aptiy='sudo apt install -y'
+alias aptpr='sudo apt purge'
+alias aptrm='sudo apt remove'
+alias aptug='sudo apt upgrade'
+alias aptugy='sudo apt update && sudo apt upgrade -y'
+alias aptup='sudo apt update'
+
+# cd
+alias ..='cd ..'
+alias ....='cd ../..'
+alias ..2='cd ../..'
+alias ..3='cd ../../..'
+
+# ls
+alias ls='ls -F --color=auto --group-directories-first'
+alias la='ls -A'
+alias la1='ls -A1'
+alias ll='ls -hl'
+alias lla='ls -Ahl'
+
+# xdg-open
+alias open='xdg-open'
+alias -s {png,jpg,bmp,PNG,JPG,BMP}='open'
+
+# xclip
+alias pbcopy='xclip -selection clipboard'
+alias pbpaste='xclip -selection c -o'
+
+# python
+alias python=python3
+alias pip=pip3
+
+# global alias
+alias -g C='| pbcopy'
+alias -g G='| grep'
+alias -g H='| head'
+alias -g L='| less -R'
+alias -g T='| tail'
+
+# 解凍コマンド
 function extract() {
   case $1 in
-    *.tar) tar xvf $1;;
-    *.tar.gz|*.tgz) tar zxvf $1;;
-    *.tar.Z|*.taz) tar Zxvf $1;;
-    *.tar.bz2|*.tbz) tar jxvf $1;;
-    *.tar.xz) tar Jxvf $1;;
-    *.zip) unzip $1;;
-    *.lzh) lha e $1;;
-    *.gz) gzip -d $1;;
-    *.bz2) bzip2 -dc $1;;
-    *.Z) uncompress $1;;
+    *.7z) p7zip -d $1;;
     *.arj) unarj $1;;
+    *.bz2) bzip2 -dc $1;;
+    *.gz) gzip -d $1;;
+    *.lzh) lha e $1;;
+    *.tar.bz2|*.tbz) tar jxvf $1;;
+    *.tar.gz|*.tgz) tar zxvf $1;;
+    *.tar.xz) tar Jxvf $1;;
+    *.tar.Z|*.taz) tar Zxvf $1;;
+    *.tar) tar xvf $1;;
+    *.Z) uncompress $1;;
+    *.zip) unzip $1;;
   esac
 }
+alias -s {tar,gz,tgz,Z,taz,bz2,tbz,xz,zip,lzh,arj,7z}=extract
 
-alias -s {tar,gz,tgz,Z,taz,bz2,tbz,xz,zip,lzh,arj}=extract
-
-# fuck
-eval "$(thefuck --alias)"
-eval "$(thefuck --alias FUCK)"
+# thefuck
+if which thefuck > /dev/null 2>&1; then
+  eval $(thefuck --alias)
+  alias f='fuck'
+fi
 
 # SDKMAN
 export SDKMAN_DIR=~/.sdkman
 [[ -s ~/.sdkman/bin/sdkman-init.sh ]] && source ~/.sdkman/bin/sdkman-init.sh
 
-# AWS Command Completion
-[[ -s /usr/local/bin/aws_zsh_completer.sh ]] && source /usr/local/bin/aws_zsh_completer.sh
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f ~/google-cloud-sdk/path.zsh.inc ]; then
-  source ~/google-cloud-sdk/path.zsh.inc
-fi
-# The next line enables shell command completion for gcloud.
-if [ -f ~/google-cloud-sdk/completion.zsh.inc ]; then
-  source ~/google-cloud-sdk/completion.zsh.inc
-fi
-
-clear
+# Added by n-install (see http://git.io/n-install-repo).
+export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"
