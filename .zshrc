@@ -13,28 +13,27 @@ eval "$(dircolors $HOME/.dircolors)"
 #
 # https://github.com/zdharma/zplugin
 
-if [ -z "$ZPLG_HOME" ]; then
-    ZPLG_HOME="$HOME/.zplugin"
+if [[ ! -d "$HOME/.zplugin" ]]; then
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zplugin/master/doc/install.sh)"
 fi
 
-if [ ! -d "$ZPLG_HOME" ]; then
-  echo ">>> Downloading zplugin to $ZPLG_HOME"
-  git clone --depth 1 https://github.com/zdharma/zplugin.git "$ZPLG_HOME"
-  echo ">>> Done"
-fi
-
-source "$ZPLG_HOME/zplugin.zsh"
+source "$HOME/.zplugin/bin/zplugin.zsh"
 autoload -Uz _zplugin
 (( ${+_comps} )) && _comps[zplugin]=_zplugin
 
-zplugin light zsh-users/zsh-autosuggestions
+zplugin ice wait"0" blockf lucid
 zplugin light zsh-users/zsh-completions
+
+zplugin ice wait"0" atload"_zsh_autosuggest_start" lucid
+zplugin light zsh-users/zsh-autosuggestions
+
+zplugin ice wait"0" atinit"zpcompinit; zpcdreplay" lucid
+zplugin light zdharma/fast-syntax-highlighting
+
 zplugin light soimort/translate-shell
 
 zplugin snippet OMZ::plugins/git/git.plugin.zsh
-
-zplugin ice wait"0" atinit"zpcompinit" lucid
-zplugin light zdharma/fast-syntax-highlighting
+zplugin snippet OMZ::plugins/extract/extract.plugin.zsh
 
 ################################################################################
 #          _                   _   _
@@ -49,9 +48,6 @@ zplugin light zdharma/fast-syntax-highlighting
 # %B..%b        : 太字
 # %U..%u        : 下線
 # %d            : 説明
-
-# 補完機能を有効にする
-# autoload -Uz compinit && compinit
 
 # プロンプトの表示形式
 PROMPT="%B%F{red}%n@%m%f:%F{blue}%~%f%b
@@ -136,9 +132,9 @@ unsetopt INC_APPEND_HISTORY_TIME  # シェルの終了を待たず, コマンド
 unsetopt SHARE_HISTORY            # 履歴を複数端末間で共有, EXTENDED_HISTORY 形式で記録する
 
 # キーバインドの設定
-bindkey '^;5D'    backward-word             # 単語区切りで後方移動
-bindkey '^;5C'    forward-word              # 単語区切りで前方移動
-bindkey '^[[Z'    reverse-menu-complete     # Shift+Tabで補完候補を逆順する
+bindkey ';5D'     backward-word              # 単語区切りで後方移動
+bindkey ';5C'     forward-word               # 単語区切りで前方移動
+bindkey '^[[Z'    reverse-menu-complete      # Shift+Tabで補完候補を逆順する
 
 # カーソル位置までの入力から履歴を検索し、カーソル位置を行末に移動する
 autoload -Uz history-search-end
@@ -201,34 +197,13 @@ alias -g H='| head'
 alias -g L='| less -R'
 alias -g T='| tail'
 
-# 解凍コマンド
-function extract() {
-  case $1 in
-    *.7z) p7zip -d $1;;
-    *.arj) unarj $1;;
-    *.bz2) bzip2 -dc $1;;
-    *.gz) gzip -d $1;;
-    *.lzh) lha e $1;;
-    *.tar.bz2|*.tbz) tar jxvf $1;;
-    *.tar.gz|*.tgz) tar zxvf $1;;
-    *.tar.xz) tar Jxvf $1;;
-    *.tar.Z|*.taz) tar Zxvf $1;;
-    *.tar) tar xvf $1;;
-    *.Z) uncompress $1;;
-    *.zip) unzip $1;;
-  esac
-}
-alias -s {tar,gz,tgz,Z,taz,bz2,tbz,xz,zip,lzh,arj,7z}=extract
+# thefuck https://github.com/nvbn/thefuck
+which thefuck > /dev/null && eval $(thefuck --alias fuck) && alias f='fuck'
 
-# thefuck
-if which thefuck > /dev/null 2>&1; then
-  eval $(thefuck --alias)
-  alias f='fuck'
-fi
-
-# SDKMAN
-export SDKMAN_DIR=~/.sdkman
-[[ -s ~/.sdkman/bin/sdkman-init.sh ]] && source ~/.sdkman/bin/sdkman-init.sh
+# SDKMAN https://sdkman.io/install
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ ! -s "${SDKMAN_DIR}/bin/sdkman-init.sh" ]] && curl -s "https://get.sdkman.io" | bash
+source "${SDKMAN_DIR}/bin/sdkman-init.sh"
 
 # Added by n-install (see http://git.io/n-install-repo).
 export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"
