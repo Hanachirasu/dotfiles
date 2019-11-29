@@ -30,10 +30,15 @@ zplugin light zsh-users/zsh-autosuggestions
 zplugin ice wait"0" atinit"zpcompinit; zpcdreplay" lucid
 zplugin light zdharma/fast-syntax-highlighting
 
+zplugin ice wait"1" lucid; zplugin snippet OMZ::plugins/git/git.plugin.zsh
+zplugin ice wait"1" lucid; zplugin snippet OMZ::plugins/extract/extract.plugin.zsh
+zplugin ice wait"1" lucid; zplugin snippet OMZ::plugins/sudo/sudo.plugin.zsh
+
 zplugin light soimort/translate-shell
 
-zplugin snippet OMZ::plugins/git/git.plugin.zsh
-zplugin snippet OMZ::plugins/extract/extract.plugin.zsh
+# テーマ
+zplugin light "denysdovhan/spaceship-prompt"
+SPACESHIP_EXEC_TIME_SHOW=false
 
 ################################################################################
 #          _                   _   _
@@ -49,13 +54,7 @@ zplugin snippet OMZ::plugins/extract/extract.plugin.zsh
 # %U..%u        : 下線
 # %d            : 説明
 
-# プロンプトの表示形式
-PROMPT="%B%F{red}%n@%m%f:%F{blue}%~%f%b
-%# "
-# 2行目以降
-PROMPT2="> "
-
-# 単語の一部と見なす文字 (デフォルトの"$WORDCHARS"から'/'を削除)
+# 単語の一部と見なす文字 (デフォルトの $WORDCHARS から '/' を削除)
 WORDCHARS="*?_-.[]~=&;!#$%^(){}<>"
 
 # Changing Directories
@@ -66,6 +65,7 @@ setopt CHASE_LINKS             # ディレクトリを変更したとき、シ�
 
 # Input/Output
 setopt CORRECT                 # コマンドのスペルミスを指摘し修正するか尋ねる
+setopt INTERACTIVE_COMMENTS    # 対話型シェルで'#'コメントを使えるようにする
 
 # Expansion and Globbing
 setopt BRACE_CCL               # ブレース展開機能
@@ -97,7 +97,9 @@ zstyle ':completion:*' list-separator '-->'
 zstyle ':completion:*' completer _complete
 
 # マッチするものがなければ、大文字小文字を無視して再マッチング
-zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
+# zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
+# 大文字小文字を無視してマッチング
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 
 # 補完候補リストのグループ化とそのグループの説明を表示する
 zstyle ':completion:*' group-name ''
@@ -155,12 +157,7 @@ alias gdiff='git diff --color-words'
 alias grep='grep --color=auto'
 
 # apt
-alias aptac='sudo apt autoclean'
-alias aptarm='sudo apt autoremove'
 alias apti='sudo apt install'
-alias aptiy='sudo apt install -y'
-alias aptpr='sudo apt purge'
-alias aptrm='sudo apt remove'
 alias aptug='sudo apt upgrade'
 alias aptugy='sudo apt update && sudo apt upgrade -y'
 alias aptup='sudo apt update'
@@ -196,6 +193,16 @@ alias -g G='| grep'
 alias -g H='| head'
 alias -g L='| less -R'
 alias -g T='| tail'
+
+# adb
+alias adb="$HOME/Android/Sdk/platform-tools/adb"
+
+# Wi-Fiでadb接続をする
+function adbw {
+  ipAddr=$(adb shell "ip addr show wlan0 | grep 'inet ' | sed -e 's/^.*inet //g' -e 's/\/.*$//g'")
+  adb tcpip 5555
+  adb connect $ipAddr:5555
+}
 
 # thefuck https://github.com/nvbn/thefuck
 which thefuck > /dev/null && eval $(thefuck --alias fuck) && alias f='fuck'
