@@ -14,16 +14,13 @@ export JAVA_HOME="$HOME/.sdkman/candidates/java/current"
 export KOTLIN_HOME="$HOME/.sdkman/candidates/kotlin/current"
 export GRADLE_HOME="$HOME/.sdkman/candidates/gradle/current"
 
-# local java_version=$(java -version 2>&1 | head -n 1 | cut -d '"' -f 2 | cut -d '.' -f 1)
-# if [[ $java_version -ge 9 ]]; then
-#   JAVA_OPTS="$JAVA_OPTS \
-# --add-opens=java.base/java.lang=ALL-UNNAMED \
-# --add-opens=java.base/java.nio=ALL-UNNAMED \
-# --add-opens=java.base/java.lang.invoke=ALL-UNNAMED \
-# --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED"
-# fi
+# Firefox でタッチスクリーンを使ってスクロールするための設定
+export MOZ_USE_XINPUT2=1
 
 export WINEARCH=win32
+
+# Added by n-install (see http://git.io/n-install-repo).
+export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"
 
 if [[ ! -h $HOME/.xsession-errors ]]; then
   rm $HOME/.xsession-errors
@@ -35,4 +32,12 @@ if [[ ! -h $HOME/.xsession-errors.old ]]; then
   ln -s /dev/null $HOME/.xsession-errors.old
 fi
 
-# rm -rf /run/user/1000/snap.android-studio && mkdir -m 0700 /run/user/1000/snap.android-studio
+# エミュレータの警告を抑制する
+rm -rf /run/user/1000/snap.android-studio && mkdir -m 0700 /run/user/1000/snap.android-studio
+
+# google-chrome のキャッシュディレクトリをRAMディスクへ移動する
+mkdir -p /dev/shm/cache/chrome
+if [[ ! -h $HOME/.cache/google-chrome ]]; then
+  rm -rf $HOME/.cache/google-chrome/Default
+  ln -s /dev/shm/cache/chrome $HOME/.cache/google-chrome/Default
+fi

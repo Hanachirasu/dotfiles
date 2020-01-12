@@ -3,7 +3,7 @@ export LANG=ja_JP.UTF-8
 # set $LS_COLORS
 eval "$(dircolors $HOME/.dircolors)"
 
-# ################################################################################
+################################################################################
 #            _             _
 #  _____ __ | |_   _  __ _(_)_ __
 # |_  / '_ \| | | | |/ _` | | '_ \
@@ -21,24 +21,14 @@ source "$HOME/.zplugin/bin/zplugin.zsh"
 autoload -Uz _zplugin
 (( ${+_comps} )) && _comps[zplugin]=_zplugin
 
-zplugin ice wait"0" blockf lucid
-zplugin light zsh-users/zsh-completions
+zplugin ice wait"!0"; zplugin light zsh-users/zsh-completions
+zplugin ice wait"!0"; zplugin light zsh-users/zsh-autosuggestions
+zplugin ice wait"!1"; zplugin light zdharma/fast-syntax-highlighting
+zplugin ice wait"!1"; zplugin light soimort/translate-shell
 
-zplugin ice wait"0" atload"_zsh_autosuggest_start" lucid
-zplugin light zsh-users/zsh-autosuggestions
-
-zplugin ice wait"0" atinit"zpcompinit; zpcdreplay" lucid
-zplugin light zdharma/fast-syntax-highlighting
-
-zplugin ice wait"1" lucid; zplugin snippet OMZ::plugins/git/git.plugin.zsh
-zplugin ice wait"1" lucid; zplugin snippet OMZ::plugins/extract/extract.plugin.zsh
-zplugin ice wait"1" lucid; zplugin snippet OMZ::plugins/sudo/sudo.plugin.zsh
-
-zplugin light soimort/translate-shell
-
-# テーマ
-zplugin light "denysdovhan/spaceship-prompt"
-SPACESHIP_EXEC_TIME_SHOW=false
+zplugin ice wait"!1"; zplugin snippet OMZ::plugins/git/git.plugin.zsh
+zplugin ice wait"!1"; zplugin snippet OMZ::plugins/extract/extract.plugin.zsh
+zplugin ice wait"!1"; zplugin snippet OMZ::plugins/sudo/sudo.plugin.zsh
 
 ################################################################################
 #          _                   _   _
@@ -54,8 +44,9 @@ SPACESHIP_EXEC_TIME_SHOW=false
 # %U..%u        : 下線
 # %d            : 説明
 
-# 単語の一部と見なす文字 (デフォルトの $WORDCHARS から '/' を削除)
-WORDCHARS="*?_-.[]~=&;!#$%^(){}<>"
+# 単語の一部と見なす文字（区切り文字と見なさない文字）
+# デフォルト *?_-.[]~=/&;!#$%^(){}<>
+WORDCHARS="*?_-.[]~&;!#$%^(){}<>"
 
 # Changing Directories
 setopt AUTO_CD                 # ディレクトリ名だけでcdコマンドを実行する
@@ -124,6 +115,7 @@ setopt APPEND_HISTORY           # ヒストリーファイルを上書きせず�
 setopt HIST_FIND_NO_DUPS        # 履歴エントリ検索中一度見つけたコマンドを表示しない
 setopt HIST_IGNORE_ALL_DUPS     # 重複するコマンドの記録時に古い方を削除する
 setopt HIST_IGNORE_DUPS         # 直前と重複するコマンドを記録しない
+setopt HIST_IGNORE_SPACE        # 先頭がスペースのコマンドを記録しない
 setopt HIST_NO_FUNCTIONS        # 関数定義を記録しない
 setopt HIST_NO_STORE            # history (fc -l) コマンドは記録しない
 setopt HIST_REDUCE_BLANKS       # 余分な空白を削除
@@ -188,11 +180,14 @@ alias python=python3
 alias pip=pip3
 
 # global alias
-alias -g C='| pbcopy'
-alias -g G='| grep'
-alias -g H='| head'
-alias -g L='| less -R'
-alias -g T='| tail'
+# alias -g C='| pbcopy'
+# alias -g G='| grep'
+# alias -g H='| head'
+# alias -g L='| less -R'
+# alias -g T='| tail'
+
+# xmllint
+alias xpath="xmllint --html --xpath 2>/dev/null"
 
 # adb
 alias adb="$HOME/Android/Sdk/platform-tools/adb"
@@ -212,5 +207,6 @@ export SDKMAN_DIR="$HOME/.sdkman"
 [[ ! -s "${SDKMAN_DIR}/bin/sdkman-init.sh" ]] && curl -s "https://get.sdkman.io" | bash
 source "${SDKMAN_DIR}/bin/sdkman-init.sh"
 
-# Added by n-install (see http://git.io/n-install-repo).
-export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"
+# Starship https://github.com/starship/starship
+which starship > /dev/null || curl -fsSL https://starship.rs/install.sh | bash -s -- -b "$HOME/bin"
+which starship > /dev/null && eval "$(starship init zsh)"
