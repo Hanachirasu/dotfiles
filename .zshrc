@@ -21,14 +21,32 @@ source "$HOME/.zplugin/bin/zplugin.zsh"
 autoload -Uz _zplugin
 (( ${+_comps} )) && _comps[zplugin]=_zplugin
 
-zplugin ice wait"!0"; zplugin light zsh-users/zsh-completions
-zplugin ice wait"!0"; zplugin light zsh-users/zsh-autosuggestions
-zplugin ice wait"!1"; zplugin light zdharma/fast-syntax-highlighting
-zplugin ice wait"!1"; zplugin light soimort/translate-shell
+zplugin ice wait blockf lucid
+zplugin light zsh-users/zsh-completions
 
-zplugin ice wait"!1"; zplugin snippet OMZ::plugins/git/git.plugin.zsh
-zplugin ice wait"!1"; zplugin snippet OMZ::plugins/extract/extract.plugin.zsh
-zplugin ice wait"!1"; zplugin snippet OMZ::plugins/sudo/sudo.plugin.zsh
+zplugin ice wait atload"_zsh_autosuggest_start" lucid
+zplugin light zsh-users/zsh-autosuggestions
+
+zplugin ice wait atinit"zpcompinit; zpcdreplay" lucid
+zplugin light zdharma/fast-syntax-highlighting
+
+# trans 翻訳コマンド
+zplugin ice wait lucid; zplugin light soimort/translate-shell
+
+# extract 様々な形式のアーカイブファイルを解凍できる関数
+zplugin ice wait lucid; zplugin snippet OMZ::plugins/extract/extract.plugin.zsh
+
+# Escを2回押すと、現在または以前のコマンドの前にsudoを付ける
+zplugin ice wait lucid; zplugin snippet OMZ::plugins/sudo/sudo.plugin.zsh
+
+# git のエイリアスと便利関数
+# zplugin ice wait lucid; zplugin snippet OMZ::plugins/git/git.plugin.zsh
+
+# docker-compose のエイリアスと自動補完
+if which docker-compose > /dev/null; then
+  alias dco='docker-compose'
+  zplugin ice wait as"completion" blockf lucid; zplugin snippet OMZ::plugins/docker-compose/_docker-compose
+fi
 
 ################################################################################
 #          _                   _   _
@@ -46,7 +64,7 @@ zplugin ice wait"!1"; zplugin snippet OMZ::plugins/sudo/sudo.plugin.zsh
 
 # 単語の一部と見なす文字（区切り文字と見なさない文字）
 # デフォルト *?_-.[]~=/&;!#$%^(){}<>
-WORDCHARS="*?_-.[]~&;!#$%^(){}<>"
+WORDCHARS="*?_-.[]~&!#$%^(){}<>"
 
 # Changing Directories
 setopt AUTO_CD                 # ディレクトリ名だけでcdコマンドを実行する
@@ -119,9 +137,9 @@ setopt HIST_IGNORE_SPACE        # 先頭がスペースのコマンドを記録�
 setopt HIST_NO_FUNCTIONS        # 関数定義を記録しない
 setopt HIST_NO_STORE            # history (fc -l) コマンドは記録しない
 setopt HIST_REDUCE_BLANKS       # 余分な空白を削除
-unsetopt EXTENDED_HISTORY         # タイムスタンプ機能 ': <開始時間>:<経過秒数>;<コマンド>' の形式で記録される
-# 以下3つの設定は排他的に機能する
-setopt INC_APPEND_HISTORY       # シェルの終了を待たず, コマンド実行時に記録する
+unsetopt EXTENDED_HISTORY       # タイムスタンプ機能 ': <開始時間>:<経過秒数>;<コマンド>' の形式で記録される
+# 下記3つの設定は排他的に機能する
+setopt INC_APPEND_HISTORY         # シェルの終了を待たず, コマンド実行時に記録する
 unsetopt INC_APPEND_HISTORY_TIME  # シェルの終了を待たず, コマンド終了時に EXTENDED_HISTORY 形式で記録する
 unsetopt SHARE_HISTORY            # 履歴を複数端末間で共有, EXTENDED_HISTORY 形式で記録する
 
@@ -187,7 +205,7 @@ alias pip=pip3
 # alias -g T='| tail'
 
 # xmllint
-alias xpath="xmllint --html --xpath 2>/dev/null"
+alias xpath='xmllint --html --xpath 2>/dev/null'
 
 # adb
 alias adb="$HOME/Android/Sdk/platform-tools/adb"
