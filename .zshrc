@@ -11,41 +11,42 @@ eval "$(dircolors $HOME/.dircolors)"
 # /___| .__/|_|\__,_|\__, |_|_| |_|
 #     |_|            |___/
 #
-# https://github.com/zdharma/zplugin
+# https://github.com/zdharma/zinit
 
-if [[ ! -d "$HOME/.zplugin" ]]; then
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zplugin/master/doc/install.sh)"
+if [[ ! -d ~/.zinit ]]; then
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh)"
 fi
 
-source "$HOME/.zplugin/bin/zplugin.zsh"
-autoload -Uz _zplugin
-(( ${+_comps} )) && _comps[zplugin]=_zplugin
+source ~/.zinit/bin/zinit.zsh
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
 
-zplugin ice wait blockf lucid
-zplugin light zsh-users/zsh-completions
+zinit ice wait blockf lucid
+zinit light zsh-users/zsh-completions
 
-zplugin ice wait atload"_zsh_autosuggest_start" lucid
-zplugin light zsh-users/zsh-autosuggestions
+zinit ice wait atload"_zsh_autosuggest_start" lucid
+zinit light zsh-users/zsh-autosuggestions
 
-zplugin ice wait atinit"zpcompinit; zpcdreplay" lucid
-zplugin light zdharma/fast-syntax-highlighting
+zinit ice wait atinit"zpcompinit; zpcdreplay" lucid
+zinit light zdharma/fast-syntax-highlighting
 
 # trans 翻訳コマンド
-zplugin ice wait lucid; zplugin light soimort/translate-shell
+zinit ice wait lucid; zinit light soimort/translate-shell
 
 # extract 様々な形式のアーカイブファイルを解凍できる関数
-zplugin ice wait lucid; zplugin snippet OMZ::plugins/extract/extract.plugin.zsh
+zinit ice wait lucid; zinit snippet OMZ::plugins/extract/extract.plugin.zsh
 
 # Escを2回押すと、現在または以前のコマンドの前にsudoを付ける
-zplugin ice wait lucid; zplugin snippet OMZ::plugins/sudo/sudo.plugin.zsh
+zinit ice wait lucid; zinit snippet OMZ::plugins/sudo/sudo.plugin.zsh
 
 # git のエイリアスと便利関数
-# zplugin ice wait lucid; zplugin snippet OMZ::plugins/git/git.plugin.zsh
+# zinit ice wait lucid; zinit snippet OMZ::plugins/git/git.plugin.zsh
 
 # docker-compose のエイリアスと自動補完
 if which docker-compose > /dev/null; then
   alias dco='docker-compose'
-  zplugin ice wait as"completion" blockf lucid; zplugin snippet OMZ::plugins/docker-compose/_docker-compose
+  zinit ice wait as"completion" lucid
+  zinit snippet OMZ::plugins/docker-compose/_docker-compose
 fi
 
 ################################################################################
@@ -123,7 +124,7 @@ zstyle ':completion:*:warnings'     format '%F{red}-- no matches found --%f'
 zstyle ':completion:*:default' list-prompt '%S%M matches%s'
 
 # sudoコマンドの後で補完するためのパス
-zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin /usr/sbin /usr/bin /sbin /bin
+# zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin /usr/sbin /usr/bin /sbin /bin
 
 # History
 HISTFILE=~/.zsh_history         # 履歴ファイルの保存先
@@ -162,6 +163,7 @@ bindkey '^n' history-beginning-search-forward-end
 # | (_| | | | (_| \__ \
 #  \__,_|_|_|\__,_|___/
 
+alias rm="rm -i"
 alias diff='diff -u'
 alias gdiff='git diff --color-words'
 alias grep='grep --color=auto'

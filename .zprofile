@@ -33,7 +33,9 @@ if [[ ! -h $HOME/.xsession-errors.old ]]; then
 fi
 
 # エミュレータの警告を抑制する
-rm -rf /run/user/1000/snap.android-studio && mkdir -m 0700 /run/user/1000/snap.android-studio
+[[ -d /run/user/1000/snap.android-studio ]] \
+&& rm -rf /run/user/1000/snap.android-studio \
+&& mkdir -m 0700 /run/user/1000/snap.android-studio
 
 # google-chrome のキャッシュディレクトリをRAMディスクへ移動する
 mkdir -p /dev/shm/cache/chrome
@@ -41,3 +43,6 @@ if [[ ! -h $HOME/.cache/google-chrome ]]; then
   rm -rf $HOME/.cache/google-chrome/Default
   ln -s /dev/shm/cache/chrome $HOME/.cache/google-chrome/Default
 fi
+
+# パス配列の重複を削除
+typeset -gU cdpath fpath mailpath path
