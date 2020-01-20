@@ -38,8 +38,8 @@ fi
 && mkdir -m 0700 /run/user/1000/snap.android-studio
 
 # google-chrome のキャッシュディレクトリをRAMディスクへ移動する
-mkdir -p /dev/shm/cache/chrome
-if [[ ! -h $HOME/.cache/google-chrome ]]; then
+if [[ -d $HOME/.cache/google-chrome ]]; then
+  mkdir -p /dev/shm/cache/chrome
   rm -rf $HOME/.cache/google-chrome/Default
   ln -s /dev/shm/cache/chrome $HOME/.cache/google-chrome/Default
 fi

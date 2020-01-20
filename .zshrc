@@ -13,11 +13,11 @@ eval "$(dircolors $HOME/.dircolors)"
 #
 # https://github.com/zdharma/zinit
 
-if [[ ! -d ~/.zinit ]]; then
+if [[ ! -d "$HOME/.zinit" ]]; then
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh)"
 fi
 
-source ~/.zinit/bin/zinit.zsh
+source "$HOME/.zinit/bin/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
@@ -220,7 +220,7 @@ function adbw {
 }
 
 # thefuck https://github.com/nvbn/thefuck
-which thefuck > /dev/null && eval $(thefuck --alias fuck) && alias f='fuck'
+which thefuck > /dev/null && eval $(thefuck --alias fuck)
 
 # SDKMAN https://sdkman.io/install
 export SDKMAN_DIR="$HOME/.sdkman"
