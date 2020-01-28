@@ -4,12 +4,11 @@ export LANG=ja_JP.UTF-8
 eval "$(dircolors $HOME/.dircolors)"
 
 ################################################################################
-#            _             _
-#  _____ __ | |_   _  __ _(_)_ __
-# |_  / '_ \| | | | |/ _` | | '_ \
-#  / /| |_) | | |_| | (_| | | | | |
-# /___| .__/|_|\__,_|\__, |_|_| |_|
-#     |_|            |___/
+#      _       _ _
+#  ___(_)_ __ (_) |_
+# |_  / | '_ \| | __|
+#  / /| | | | | | |_
+# /___|_|_| |_|_|\__|
 #
 # https://github.com/zdharma/zinit
 
@@ -29,6 +28,9 @@ zinit light zsh-users/zsh-autosuggestions
 
 zinit ice wait atinit"zpcompinit; zpcdreplay" lucid
 zinit light zdharma/fast-syntax-highlighting
+
+# テーマ
+zinit light denysdovhan/spaceship-prompt
 
 # trans 翻訳コマンド
 zinit ice wait lucid; zinit light soimort/translate-shell
@@ -228,5 +230,5 @@ export SDKMAN_DIR="$HOME/.sdkman"
 source "${SDKMAN_DIR}/bin/sdkman-init.sh"
 
 # Starship https://github.com/starship/starship
-which starship > /dev/null || curl -fsSL https://starship.rs/install.sh | bash -s -- -b "$HOME/bin"
-which starship > /dev/null && eval "$(starship init zsh)"
+# which starship > /dev/null || curl -fsSL https://starship.rs/install.sh | bash -s -- -b "$HOME/bin"
+# which starship > /dev/null && eval "$(starship init zsh)"
