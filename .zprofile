@@ -1,9 +1,11 @@
-for i in /etc/profile.d/*.sh ; do
-  [ -r $i ] && source $i
-done
+for f (/etc/profile.d/*.sh) { [[ -r $f ]] && source $f } 2> /dev/null
 
-[[ -d "$HOME/bin" ]] && PATH="$HOME/bin:$PATH"
-[[ -d "$HOME/.local/bin" ]] && PATH="$HOME/.local/bin:$PATH"
+for f (~/.xsession-errors*) { [[ -f $f ]] && ln -sf /dev/null $f } 2> /dev/null
+
+path+=(
+  ~/bin
+  ~/.local/bin
+)
 
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
@@ -22,20 +24,11 @@ export WINEARCH=win32
 # Added by n-install (see http://git.io/n-install-repo).
 export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"
 
-if [[ ! -h $HOME/.xsession-errors ]]; then
-  rm $HOME/.xsession-errors
-  ln -s /dev/null $HOME/.xsession-errors
-fi
-
-if [[ ! -h $HOME/.xsession-errors.old ]]; then
-  rm $HOME/.xsession-errors.old
-  ln -s /dev/null $HOME/.xsession-errors.old
-fi
-
 # エミュレータの警告を抑制する
-[[ -d /run/user/1000/snap.android-studio ]] \
-&& rm -rf /run/user/1000/snap.android-studio \
-&& mkdir -m 0700 /run/user/1000/snap.android-studio
+if [[ -d /run/user/1000/snap.android-studio ]]; then
+  rm -rf /run/user/1000/snap.android-studio
+  mkdir -m 0700 /run/user/1000/snap.android-studio
+fi
 
 # google-chrome のキャッシュディレクトリをRAMディスクへ移動する
 if [[ -d $HOME/.cache/google-chrome ]]; then

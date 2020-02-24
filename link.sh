@@ -1,8 +1,8 @@
 #!/bin/sh
-DIR=$(cd $(dirname $0) && pwd)
-ln -sf $DIR/.zshrc ~/.zshrc
-ln -sf $DIR/.zprofile ~/.zprofile
-ln -sf $DIR/.vimrc ~/.vimrc
-ln -sf $DIR/.dircolors ~/.dircolors
+current_dir=$(cd "$(dirname "$0")" && pwd)
+ln -sf "$current_dir/.zshrc" ~/.zshrc
+ln -sf "$current_dir/.zprofile" ~/.zprofile
+ln -sf "$current_dir/.vimrc" ~/.vimrc
+ln -sf "$current_dir/.dircolors" ~/.dircolors
 mkdir -p ~/.config/fontconfig
-ln -sf $DIR/fonts.conf ~/.config/fontconfig/fonts.conf
+ln -sf "$current_dir/fonts.conf" ~/.config/fontconfig/fonts.conf

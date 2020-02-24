@@ -20,14 +20,14 @@ source "$HOME/.zinit/bin/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
-zinit ice wait blockf lucid
+zinit ice wait lucid blockf
 zinit light zsh-users/zsh-completions
 
-zinit ice wait atload"_zsh_autosuggest_start" lucid
-zinit light zsh-users/zsh-autosuggestions
-
-zinit ice wait atinit"zpcompinit; zpcdreplay" lucid
+zinit ice wait lucid atinit"zpcompinit; zpcdreplay"
 zinit light zdharma/fast-syntax-highlighting
+
+zinit ice wait lucid atload"_zsh_autosuggest_start"
+zinit light zsh-users/zsh-autosuggestions
 
 # テーマ
 zinit light denysdovhan/spaceship-prompt
@@ -44,12 +44,18 @@ zinit ice wait lucid; zinit snippet OMZ::plugins/sudo/sudo.plugin.zsh
 # git のエイリアスと便利関数
 # zinit ice wait lucid; zinit snippet OMZ::plugins/git/git.plugin.zsh
 
-# docker-compose のエイリアスと自動補完
-if which docker-compose > /dev/null; then
-  alias dco='docker-compose'
-  zinit ice wait as"completion" lucid
-  zinit snippet OMZ::plugins/docker-compose/_docker-compose
-fi
+# exa 'ls'コマンドの代替 https://github.com/ogham/exa
+zinit ice wait"1" lucid from"gh-r" as"program" mv"exa* -> exa"
+zinit light ogham/exa
+alias exa='exa --icons --git'
+
+# docker-compose
+zinit ice wait lucid from"gh-r" as"program" mv"docker* -> docker-compose"
+zinit light docker/compose
+alias dco='docker-compose'
+# docker-compose 自動補完
+zinit ice wait lucid as"completion"
+zinit snippet OMZ::plugins/docker-compose/_docker-compose
 
 ################################################################################
 #          _                   _   _
@@ -172,9 +178,9 @@ alias grep='grep --color=auto'
 
 # apt
 alias apti='sudo apt install'
+alias aptup='sudo apt update'
 alias aptug='sudo apt upgrade'
 alias aptugy='sudo apt update && sudo apt upgrade -y'
-alias aptup='sudo apt update'
 
 # cd
 alias ..='cd ..'
@@ -198,8 +204,8 @@ alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection c -o'
 
 # python
-alias python=python3
-alias pip=pip3
+alias python='python3'
+alias pip='pip3'
 
 # global alias
 # alias -g C='| pbcopy'
@@ -232,3 +238,12 @@ source "${SDKMAN_DIR}/bin/sdkman-init.sh"
 # Starship https://github.com/starship/starship
 # which starship > /dev/null || curl -fsSL https://starship.rs/install.sh | bash -s -- -b "$HOME/bin"
 # which starship > /dev/null && eval "$(starship init zsh)"
+
+function update_all {
+  which apt > /dev/null && sudo apt update && sudo apt upgrade -y
+  which snap > /dev/null && sudo snap refresh
+  which zinit > /dev/null && zinit self-update && zinit update --all
+  which sdk > /dev/null && sdk upgrade
+  which n > /dev/null && n lts
+  which npm > /dev/null && npm update -g
+}
