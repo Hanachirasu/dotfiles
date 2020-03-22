@@ -41,6 +41,9 @@ zinit ice wait lucid; zinit snippet OMZ::plugins/extract/extract.plugin.zsh
 # Escを2回押すと、現在または以前のコマンドの前にsudoを付ける
 zinit ice wait lucid; zinit snippet OMZ::plugins/sudo/sudo.plugin.zsh
 
+# Angular CLI
+zinit ice wait lucid; zinit snippet OMZ::plugins/ng/ng.plugin.zsh
+
 # git のエイリアスと便利関数
 # zinit ice wait lucid; zinit snippet OMZ::plugins/git/git.plugin.zsh
 
@@ -247,3 +250,5 @@ function update_all {
   which n > /dev/null && n lts
   which npm > /dev/null && npm update -g
 }
+
+### End of Zinit's installer chunk
