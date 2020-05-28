@@ -2,23 +2,16 @@ for f (/etc/profile.d/*.sh) { [[ -r $f ]] && source $f } 2> /dev/null
 
 for f (~/.xsession-errors*) { [[ -f $f ]] && ln -sf /dev/null $f } 2> /dev/null
 
-path+=(
-  ~/bin
-  ~/.local/bin
-)
-
-export GTK_IM_MODULE=fcitx
-export QT_IM_MODULE=fcitx
-export XMODIFIERS=@im=fcitx
-export DefaultIMModule=fcitx
-
-export JAVA_HOME="$HOME/.sdkman/candidates/java/current"
-export KOTLIN_HOME="$HOME/.sdkman/candidates/kotlin/current"
-export GRADLE_HOME="$HOME/.sdkman/candidates/gradle/current"
+export SDKMAN_DIR="$HOME/.sdkman"
+export JAVA_HOME="$SDKMAN_DIR/candidates/java/current"
+export KOTLIN_HOME="$SDKMAN_DIR/candidates/kotlin/current"
+export GRADLE_HOME="$SDKMAN_DIR/candidates/gradle/current"
+export ANDROID_SDK_ROOT="$HOME/Android/Sdk"
 
 # Firefox でタッチスクリーンを使ってスクロールするための設定
 export MOZ_USE_XINPUT2=1
 
+# wine
 export WINEARCH=win32
 
 # Added by n-install (see http://git.io/n-install-repo).
@@ -30,12 +23,18 @@ if [[ -d /run/user/1000/snap.android-studio ]]; then
   mkdir -m 0700 /run/user/1000/snap.android-studio
 fi
 
-# google-chrome のキャッシュディレクトリをRAMディスクへ移動する
-if [[ -d $HOME/.cache/google-chrome ]]; then
+# google-chrome のキャッシュディレクトリをRAMへ移動する
+if [[ -d ~/.cache/google-chrome ]]; then
   mkdir -p /dev/shm/cache/chrome
-  rm -rf $HOME/.cache/google-chrome/Default
-  ln -s /dev/shm/cache/chrome $HOME/.cache/google-chrome/Default
+  rm -rf ~/.cache/google-chrome/Default
+  ln -s /dev/shm/cache/chrome ~/.cache/google-chrome/Default
 fi
+
+path+=(
+  ~/bin
+  ~/.local/bin
+  $ANDROID_SDK_ROOT/platform-tools/adb
+)
 
 # パス配列の重複を削除
 typeset -gU cdpath fpath mailpath path
