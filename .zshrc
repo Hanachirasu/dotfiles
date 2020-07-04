@@ -31,6 +31,44 @@ zinit light zsh-users/zsh-autosuggestions
 
 # テーマ
 zinit light denysdovhan/spaceship-prompt
+SPACESHIP_DIR_TRUNC=0
+# https://denysdovhan.com/spaceship-prompt/docs/Options.html#order
+SPACESHIP_PROMPT_ORDER=(
+  time          # Time stamps section
+  user          # Username section
+  dir           # Current directory section
+  host          # Hostname section
+  git           # Git section (git_branch + git_status)
+  hg            # Mercurial section (hg_branch  + hg_status)
+  package       # Package version
+  node          # Node.js section
+  ruby          # Ruby section
+  elixir        # Elixir section
+  xcode         # Xcode section
+  swift         # Swift section
+  golang        # Go section
+  php           # PHP section
+  rust          # Rust section
+  haskell       # Haskell Stack section
+  julia         # Julia section
+  docker        # Docker section
+  aws           # Amazon Web Services section
+  # gcloud        # Google Cloud Platform section
+  venv          # virtualenv section
+  conda         # conda virtualenv section
+  pyenv         # Pyenv section
+  dotnet        # .NET section
+  ember         # Ember.js section
+  kubectl       # Kubectl context section
+  terraform     # Terraform workspace section
+  exec_time     # Execution time
+  line_sep      # Line break
+  battery       # Battery level and status
+  vi_mode       # Vi-mode indicator
+  jobs          # Background jobs indicator
+  exit_code     # Exit code section
+  char          # Prompt character
+)
 
 # trans 翻訳コマンド
 zinit ice wait lucid; zinit light soimort/translate-shell
@@ -200,6 +238,7 @@ which xclip > /dev/null \
 # python
 alias python='python3'
 alias pip='pip3'
+alias pipug='pip list -o | tail -n +3 | cut -d " " -f 1 | xargs pip install -U'
 
 # global alias
 # alias -g C='| pbcopy'
@@ -215,11 +254,10 @@ alias xpath='xmllint --html --xpath 2>/dev/null'
 which thefuck > /dev/null && alias fuck='thefuck'
 
 # SDKMAN https://sdkman.io/install
-# [[ ! -s "${SDKMAN_DIR}/bin/sdkman-init.sh" ]] && curl -s "https://get.sdkman.io" | bash
-[[ -s ${SDKMAN_DIR}/bin/sdkman-init.sh ]] && source ${SDKMAN_DIR}/bin/sdkman-init.sh
+[[ -r ${SDKMAN_DIR}/bin/sdkman-init.sh ]] && source ${SDKMAN_DIR}/bin/sdkman-init.sh
 
 # rustup https://www.rust-lang.org/tools/install
-[[ -s $HOME/.cargo/env ]] && source $HOME/.cargo/env
+[[ -r $HOME/.cargo/env ]] && source $HOME/.cargo/env
 
 # Starship https://github.com/starship/starship
 # which starship > /dev/null || curl -fsSL https://starship.rs/install.sh | bash

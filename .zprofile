@@ -8,6 +8,9 @@ export KOTLIN_HOME="$SDKMAN_DIR/candidates/kotlin/current"
 export GRADLE_HOME="$SDKMAN_DIR/candidates/gradle/current"
 export ANDROID_SDK_ROOT="$HOME/Android/Sdk"
 
+export PYTHON="/usr/bin/python3.8"
+export PYTHONPATH="/usr/lib/python3.8"
+
 # Firefox でタッチスクリーンを使ってスクロールするための設定
 export MOZ_USE_XINPUT2=1
 
