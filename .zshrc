@@ -29,10 +29,37 @@ zinit light zdharma/fast-syntax-highlighting
 zinit ice wait lucid atload"_zsh_autosuggest_start"
 zinit light zsh-users/zsh-autosuggestions
 
-# テーマ
+# trans 翻訳コマンド
+zinit ice wait lucid; zinit light soimort/translate-shell
+
+# extract 様々な形式のアーカイブファイルを解凍できる関数
+zinit ice wait lucid; zinit snippet OMZ::plugins/extract/extract.plugin.zsh
+
+# Escを2回押すと、現在または以前のコマンドの先頭にsudoを付ける
+zinit ice wait lucid; zinit snippet OMZ::plugins/sudo/sudo.plugin.zsh
+
+# Angular CLI
+zinit ice wait lucid; zinit snippet OMZ::plugins/ng/ng.plugin.zsh
+
+# docker-compose
+zinit ice wait lucid from"gh-r" as"program" mv"docker* -> docker-compose"
+zinit light docker/compose
+alias dco='docker-compose'
+zinit ice wait lucid; zinit snippet OMZ::plugins/docker-compose/_docker-compose
+
+################################################################################
+#  ____  ____   _    ____ _____ ____  _   _ ___ ____
+# / ___||  _ \ / \  / ___| ____/ ___|| | | |_ _|  _ \
+# \___ \| |_) / _ \| |   |  _| \___ \| |_| || || |_) |
+#  ___) |  __/ ___ \ |___| |___ ___) |  _  || ||  __/
+# |____/|_| /_/   \_\____|_____|____/|_| |_|___|_|
+#
 zinit light denysdovhan/spaceship-prompt
+
+# プロンプトにカレントディレクトリの全てのフォルダを表示する
 SPACESHIP_DIR_TRUNC=0
-# https://denysdovhan.com/spaceship-prompt/docs/Options.html#order
+
+# プロンプトセクションの順序を指定 https://denysdovhan.com/spaceship-prompt/docs/Options.html#order
 SPACESHIP_PROMPT_ORDER=(
   time          # Time stamps section
   user          # Username section
@@ -69,24 +96,6 @@ SPACESHIP_PROMPT_ORDER=(
   exit_code     # Exit code section
   char          # Prompt character
 )
-
-# trans 翻訳コマンド
-zinit ice wait lucid; zinit light soimort/translate-shell
-
-# extract 様々な形式のアーカイブファイルを解凍できる関数
-zinit ice wait lucid; zinit snippet OMZ::plugins/extract/extract.plugin.zsh
-
-# Escを2回押すと、現在または以前のコマンドの前にsudoを付ける
-zinit ice wait lucid; zinit snippet OMZ::plugins/sudo/sudo.plugin.zsh
-
-# Angular CLI
-zinit ice wait lucid; zinit snippet OMZ::plugins/ng/ng.plugin.zsh
-
-# docker-compose
-zinit ice wait lucid from"gh-r" as"program" mv"docker* -> docker-compose"
-zinit light docker/compose
-alias dco='docker-compose'
-zinit ice wait lucid; zinit snippet OMZ::plugins/docker-compose/_docker-compose
 
 ################################################################################
 #          _                   _   _
@@ -168,20 +177,20 @@ zstyle ':completion:*:default' list-prompt '%S%M matches%s'
 # History
 HISTFILE=~/.zsh_history         # 履歴ファイルの保存先
 HISTSIZE=100000                 # メモリに保存される履歴の件数
-SAVEHIST=100000                 # 履歴ファイルに保存される履歴の件数
+SAVEHIST=$HISTSIZE                 # 履歴ファイルに保存される履歴の件数
 setopt APPEND_HISTORY           # ヒストリーファイルを上書きせず追加する
 setopt HIST_FIND_NO_DUPS        # 履歴エントリ検索中一度見つけたコマンドを表示しない
-setopt HIST_IGNORE_ALL_DUPS     # 重複するコマンドの記録時に古い方を削除する
+setopt HIST_IGNORE_ALL_DUPS     # 重複するコマンドの古い方を削除する
 setopt HIST_IGNORE_DUPS         # 直前と重複するコマンドを記録しない
 setopt HIST_IGNORE_SPACE        # 先頭がスペースのコマンドを記録しない
 setopt HIST_NO_FUNCTIONS        # 関数定義を記録しない
 setopt HIST_NO_STORE            # history (fc -l) コマンドは記録しない
 setopt HIST_REDUCE_BLANKS       # 余分な空白を削除
-unsetopt EXTENDED_HISTORY       # タイムスタンプ機能 ': <開始時間>:<経過秒数>;<コマンド>' の形式で記録される
+# setopt EXTENDED_HISTORY       # タイムスタンプ機能 ': <開始時間>:<経過秒数>;<コマンド>' の形式で記録される
 # 下記3つの設定は排他的に機能する
-setopt INC_APPEND_HISTORY         # シェルの終了を待たず, コマンド実行時に記録する
-unsetopt INC_APPEND_HISTORY_TIME  # シェルの終了を待たず, コマンド終了時に EXTENDED_HISTORY 形式で記録する
-unsetopt SHARE_HISTORY            # 履歴を複数端末間で共有, EXTENDED_HISTORY 形式で記録する
+# setopt INC_APPEND_HISTORY         # シェルの終了を待たず, コマンド実行時に記録する
+# setopt INC_APPEND_HISTORY_TIME  # シェルの終了を待たず, コマンド終了時に EXTENDED_HISTORY 形式で記録する
+setopt SHARE_HISTORY            # 履歴を複数端末間で共有, EXTENDED_HISTORY 形式で記録する
 
 # キーバインドの設定
 bindkey ';5D'     backward-word              # 単語区切りで後方移動
@@ -202,7 +211,7 @@ bindkey '^n' history-beginning-search-forward-end
 # | (_| | | | (_| \__ \
 #  \__,_|_|_|\__,_|___/
 
-alias rm="rm -i"
+alias rm='rm -i'
 alias diff='diff -u'
 alias gdiff='git diff --color-words'
 alias grep='grep --color=auto'
