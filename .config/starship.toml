@@ -1,0 +1,3 @@
+[directory]
+truncation_length = 999
+truncation_symbol = '.../'

@@ -1,3 +1,5 @@
+# TODO: 整理する。
+
 for f (/etc/profile.d/*.sh) { [[ -r $f ]] && source $f } 2> /dev/null
 
 for f (~/.xsession-errors*) { [[ -f $f ]] && ln -sf /dev/null $f } 2> /dev/null
@@ -7,9 +9,6 @@ export JAVA_HOME="$SDKMAN_DIR/candidates/java/current"
 export KOTLIN_HOME="$SDKMAN_DIR/candidates/kotlin/current"
 export GRADLE_HOME="$SDKMAN_DIR/candidates/gradle/current"
 export ANDROID_SDK_ROOT="$HOME/Android/Sdk"
-
-export PYTHON="/usr/bin/python3.8"
-export PYTHONPATH="/usr/lib/python3.8"
 
 # Firefox でタッチスクリーンを使ってスクロールするための設定
 export MOZ_USE_XINPUT2=1
