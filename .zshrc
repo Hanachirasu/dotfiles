@@ -202,7 +202,9 @@ export LANG=ja_JP.UTF-8
   which xmllint > /dev/null && alias xpath='xmllint --html --xpath 2>/dev/null'
 
   # thefuck https://github.com/nvbn/thefuck
-  which thefuck > /dev/null && alias fuck='thefuck'
+  # WSLでは、WindowsのPath設定が$PATH変数に追加される影響で動作が遅くなる。
+  # そのため、`/etc/wsl.conf`で`[interop] appendWindowsPath = false`の設定をすると良い。
+  which thefuck > /dev/null && eval $(thefuck --alias)
 
   # python
   alias pipug='pip list -o | tail -n +3 | cut -d " " -f 1 | xargs pip install -U'
@@ -214,3 +216,8 @@ function adbw {
   adb tcpip 5555
   adb connect $ipAddr:5555
 }
+
+if [[ -d /usr/lib/wsl/lib ]]; then
+  # https://github.com/microsoft/WSL/issues/8587#issuecomment-1229170859
+  export LD_LIBRARY_PATH=/usr/lib/wsl/lib:$LD_LIBRARY_PATH
+fi
